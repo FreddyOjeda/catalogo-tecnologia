@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+/* =========================
+   🎨 Branding (por cliente)
+   ========================= */
+:root {
+  --color-primary: #111827;
+  /* títulos */
+  --color-secondary: #16a34a;
+  /* acciones */
+  --color-background: #ffffff;
+  --color-surface: #f9fafb;
+  /* cards */
+  --color-text: #1f2937;
+  --color-muted: #6b7280;
+}
+
+/* =========================
+   🧱 Base styles
+   ========================= */
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* =========================
+   🧩 Utilidades propias
+   ========================= */
+.card {
+  background-color: var(--color-surface);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.shadow-soft {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+}
