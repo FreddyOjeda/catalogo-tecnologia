@@ -6,14 +6,27 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import toast from 'react-hot-toast';
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 
 export function ProductCard({ product }: { product: MenuItem }) {
     const addItem = useCartStore((s) => s.addItem);
     const [error, setError] = useState(false);
+    const items = useCartStore((s) => s.items);
+    const isSelected = items.some((i) => i.id === product.id);
 
     return (
         <div className="card shadow-soft flex flex-col gap-3">
             <div className="relative w-full h-40 rounded-xl overflow-hidden mb-3 bg-gray-100 flex items-center justify-center">
+                {isSelected && (
+                    <span className="
+                    absolute top-2 right-2
+                    bg-green-600 text-white text-xs
+                    px-2 py-1 rounded-full
+                ">
+                        Seleccionado
+                    </span>
+                )}
                 {!error ? (
                     <Image
                         src={product.image}
@@ -40,22 +53,35 @@ export function ProductCard({ product }: { product: MenuItem }) {
             </div>
 
             <div className="flex items-center justify-between mt-auto">
-                <span className="text-lg font-bold text-primary">
-                    ${product.price.toLocaleString()}
-                </span>
-
                 <button
-                    onClick={() => addItem(product)}
-                    className="
-                        bg-secondary
-                        px-4 py-2 rounded-lg
-                        text-sm font-medium
-                        hover:opacity-90
-                        transition
-                    "
+                    onClick={() => {
+                        const added = addItem(product)
+
+                        if (!added) {
+                            toast.error("Este producto ya fue seleccionado");
+                        } else {
+                            toast.success("Producto agregado a la lista");
+                        }
+                    }}
+                    disabled={isSelected}
+                    className={`
+                        px-4 py-2 rounded-lg text-sm font-medium transition w-full flex items-center justify-center
+                        ${isSelected
+                            ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                            : "bg-secondary hover:opacity-90"
+                        }
+                    `}
                 >
-                    Agregar
+                    {isSelected ? (
+                        <span className="flex items-center gap-2">
+                            Seleccionado
+                            <FontAwesomeIcon icon={faCheckCircle} />
+                        </span>
+                    ) : (
+                        "Seleccionar"
+                    )}
                 </button>
+
             </div>
         </div>
     );

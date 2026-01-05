@@ -1,45 +1,26 @@
 import { create } from "zustand"
 import { MenuItem } from "../lib/menu"
 
-export type CartItem = MenuItem & {
-    quantity: number
-}
-
 type CartState = {
-    items: CartItem[]
-    addItem: (item: MenuItem) => void
+    items: MenuItem[]
+    addItem: (item: MenuItem) => boolean // devuelve si se agregó o no
+    removeItem: (id: string) => void
     clear: () => void
-    total: () => number
 }
 
 export const useCartStore = create<CartState>((set, get) => ({
     items: [],
 
     addItem: (item) => {
-        set((state) => {
-            const existing = state.items.find(i => i.id === item.id)
+        const exists = get().items.some(i => i.id === item.id)
+        if (exists) return false
 
-            if (existing) {
-                return {
-                    items: state.items.map(i =>
-                        i.id === item.id
-                            ? { ...i, quantity: i.quantity + 1 }
-                            : i
-                    )
-                }
-            }
-
-            return {
-                items: [...state.items, { ...item, quantity: 1 }]
-            }
-        })
+        set({ items: [...get().items, item] })
+        return true
     },
 
-    clear: () => set({ items: [] }),
+    removeItem: (id) =>
+        set({ items: get().items.filter(i => i.id !== id) }),
 
-    total: () =>
-        get().items.reduce(
-            (sum, item) => sum + item.price * item.quantity,
-            0
-        )
+    clear: () => set({ items: [] }),
 }))

@@ -4,12 +4,8 @@ import { useCartStore } from "@/src/store/cart.store";
 
 export function CartButton({ onClick }: { onClick: () => void }) {
     const items = useCartStore((s) => s.items);
-    const total = useCartStore((s) => s.total());
 
-    const totalItems = items.reduce(
-        (sum, item) => sum + item.quantity,
-        0
-    );
+    const totalItems = items.length;
 
     if (totalItems === 0) return null;
 
@@ -25,10 +21,10 @@ export function CartButton({ onClick }: { onClick: () => void }) {
                 shadow-soft
                 flex items-center justify-between
                 font-semibold
+                z-40
             "
         >
-            <span>{totalItems} items</span>
-            <span>${total.toLocaleString()}</span>
+            <span>{totalItems} producto{totalItems > 1 ? "s" : ""} seleccionado{totalItems > 1 ? "s" : ""}</span>
         </button>
     );
 }

@@ -1,24 +1,36 @@
-export type MenuItem = {
-    id: number
-    name: string
-    description: string
-    price: number
-    image: string
+import { BaseItem } from "../types/BaseItem"
+
+export interface MenuItem extends BaseItem {
+    description?: string
 }
 
 export const menu: MenuItem[] = [
     {
-        id: 1,
-        name: "Hamburguesa Clásica",
-        description: "Carne 100% res, queso y pan artesanal",
-        price: 18000,
-        image: "https://simonparrilla.com.co/monteria/wp-content/uploads/2022/06/SIMON-PARRILLA-COMIDAS-RAPIDAS-HAMBURGUESA-CLASICA.webp"
+        id: '1',
+        name: 'iPhone 15 Pro',
+        price: 5200000,
+        image: '/iphone15.webp',
+        category: 'smartphones',
     },
     {
-        id: 2,
-        name: "Pizza Pepperoni",
-        description: "Queso mozzarella y pepperoni",
-        price: 25000,
-        image: "https://thumbs.dreamstime.com/b/delicious-pepperoni-pizza-salami-sausage-wooden-boards-traditional-italian-food-top-view-nutrition-dinner-lunch-square-212674372.jpg"
-    }
+        id: '2',
+        name: 'iPad Air M2',
+        price: 4200000,
+        image: '/ipadair.webp',
+        category: 'tablets',
+    },
+    {
+        id: '3',
+        name: 'MacBook Air M3',
+        price: 6900000,
+        image: '/macbook.webp',
+        category: 'laptops',
+    },
+    {
+        id: '12',
+        name: 'MacBook Air M3',
+        price: 6900000,
+        image: '/macbook.webp',
+        category: 'laptops',
+    },
 ]
