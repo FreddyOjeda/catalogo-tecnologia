@@ -67,8 +67,8 @@ export function ProductCard({ product }: { product: MenuItem }) {
                     className={`
                         px-4 py-2 rounded-lg text-sm font-medium transition w-full flex items-center justify-center
                         ${isSelected
-                            ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                            : "bg-secondary hover:opacity-90"
+                            ? "bg-gray-300 text-gray-700 cursor-not-allowed"
+                            : "bg-gray-200 text-gray-700 hover:opacity-90"
                         }
                     `}
                 >
