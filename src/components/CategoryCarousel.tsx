@@ -26,8 +26,8 @@ export default function CategoryCarousel({ selected, onSelect }: Props) {
     }, [selected]);
 
     return (
-        <div className="w-full overflow-x-auto">
-            <div ref={containerRef} className="flex gap-3 px-4 py-2 min-w-max overflow-x-auto scroll-smooth scrollbar-hide">
+        <div className="w-full  overflow-x-auto scroll-smooth scrollbar-hide">
+            <div ref={containerRef} className="flex gap-3 px-4 py-2 min-w-max">
                 {categories.map(cat => (
                     <button
                         ref={(el) => {

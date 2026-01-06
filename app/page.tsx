@@ -41,7 +41,7 @@ export default function Home() {
       {/* Banner */}
       <HeroBanner />
       {/* Carrusel de categorías */}
-      <div className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b" ref={carouselRef}>
+      <div className="sticky top-0 z-40 bg-white/95 backdrop-blur shadow-sm" ref={carouselRef}>
         <CategoryCarousel
           selected={category}
           onSelect={(cat) => {
