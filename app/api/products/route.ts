@@ -1,8 +1,76 @@
 import { NextResponse } from "next/server";
 import { Product } from "@/src/types/product";
+import Papa from "papaparse";
 
-export const revalidate = 300;
+function normalize(text: string) {
+    return text
+        .trim()
+        .replace(/\s+/g, " ")
+        .toLowerCase();
+}
 
+export function parseCSV(csv: string, category: string): Product[] {
+    const parsed = Papa.parse<Record<string, string>>(csv, {
+        header: true,
+        skipEmptyLines: true,
+        transform: (value) =>
+            typeof value === "string"
+                ? value.trim().replace(/\s+/g, " ")
+                : value,
+    });
+
+    if (parsed.errors.length) {
+        console.error("CSV parse errors:", parsed.errors);
+    }
+
+    const productMap = new Map<string, {
+        name: string;
+        storages: Set<string>;
+        price: number;
+    }>();
+
+    for (const row of parsed.data) {
+        // 🔹 Nombre del producto según hoja
+        const name =
+            row["Dispositivo"] ||
+            row["Nombre"];
+
+        if (!name) continue;
+
+        const key = normalize(name);
+
+        // 🔹 Almacenamiento solo aplica a iPhones / iPads
+        const storage = row["Almacenamiento"];
+
+        const price = Number(row["Precio"]) || 0;
+
+        if (!productMap.has(key)) {
+            productMap.set(key, {
+                name,
+                storages: new Set(),
+                price,
+            });
+        }
+
+        if (storage) {
+            productMap.get(key)!.storages.add(storage);
+        }
+    }
+
+    // 🔹 Convertimos el map en productos finales
+    return Array.from(productMap.values()).map((item, index) => ({
+        id: `${category}-${index + 1}`,
+        name: item.name,
+        description:
+            item.storages.size > 0
+                ? `${Array.from(item.storages).join(", ")}`
+                : "",
+        price: item.price,
+        category,
+        image: getProductImage(item.name) ?? "/logo-gordotech.png",
+        available: true,
+    }));
+}
 // ✅ URLs CSV (una por hoja)
 const SHEETS = [
     {
@@ -30,28 +98,6 @@ function getProductImage(name: string) {
     return `/images/products/${slug}.png`;
 }
 
-
-// 🔧 Helper para parsear CSV
-function parseCSV(csv: string, category: string): Product[] {
-    const rows = csv
-        .trim()
-        .split("\n")
-        .slice(1) // quitar headers
-        .map(row => row.split(","));
-
-    return rows
-        .filter(r => r[0] && r[1])
-        .map((row, index) => ({
-            id: `${category}-${index + 1}`,
-            name: row[0],
-            description: (category != 'accesorios' && row[1]) ?? "",
-            price: Number(row[2]) || 0,
-            category,
-            image: getProductImage(row[0]) ?? "/logo-gordotech.png",
-            available: row[4] !== "false",
-        }));
-}
-
 export async function GET() {
     try {
         const results = await Promise.all(
@@ -63,6 +109,7 @@ export async function GET() {
                 }
 
                 const csv = await res.text();
+                console.log(csv)
                 return parseCSV(csv, sheet.category);
             })
         );
