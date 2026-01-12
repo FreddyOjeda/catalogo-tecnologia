@@ -17,7 +17,7 @@ export function ProductCard({ product }: { product: MenuItem }) {
 
     return (
         <div className="card shadow-soft flex flex-col gap-3">
-            <div className="relative w-full h-40 rounded-xl overflow-hidden mb-3 bg-gray-100 flex items-center justify-center">
+            <div className="relative w-full h-40 rounded-xl overflow-hidden mb-3 bg-black flex items-center justify-center">
                 {isSelected && (
                     <span className="
                     absolute top-2 right-2
@@ -33,8 +33,10 @@ export function ProductCard({ product }: { product: MenuItem }) {
                         alt={product.name}
                         fill
                         unoptimized
-                        className="object-cover"
-                        onError={() => setError(true)}
+                        className="object-contain"
+                        onError={(e) => {
+                            e.currentTarget.src = "/logo-gordotech.png";
+                        }}
                     />
                 ) : (
                     <div className="text-gray-400 flex flex-col items-center text-sm">
