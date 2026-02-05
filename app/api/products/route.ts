@@ -25,12 +25,11 @@ export function parseCSV(csv: string, category: string): Product[] {
 
     const productMap = new Map<string, {
         name: string;
-        storages: Set<string>;
+        storageColors: Map<string, Set<string>>;
         price: number;
     }>();
 
     for (const row of parsed.data) {
-        // 🔹 Nombre del producto según hoja
         const name =
             row["Dispositivo"] ||
             row["Nombre"];
@@ -39,38 +38,57 @@ export function parseCSV(csv: string, category: string): Product[] {
 
         const key = normalize(name);
 
-        // 🔹 Almacenamiento solo aplica a iPhones / iPads
         const storage = row["Almacenamiento"];
-
+        const color = row["Color"];
         const price = Number(row["Precio"]) || 0;
 
         if (!productMap.has(key)) {
             productMap.set(key, {
                 name,
-                storages: new Set(),
+                storageColors: new Map(),
                 price,
             });
         }
 
+        const product = productMap.get(key)!;
+
+        // Solo aplica cuando exista almacenamiento (iPhones / iPads)
         if (storage) {
-            productMap.get(key)!.storages.add(storage);
+            if (!product.storageColors.has(storage)) {
+                product.storageColors.set(storage, new Set());
+            }
+
+            if (color) {
+                product.storageColors.get(storage)!.add(color);
+            }
         }
     }
 
-    // 🔹 Convertimos el map en productos finales
-    return Array.from(productMap.values()).map((item, index) => ({
-        id: `${category}-${index + 1}`,
-        name: item.name,
-        description:
-            item.storages.size > 0
-                ? `${Array.from(item.storages).join(", ")}`
-                : "",
-        price: item.price,
-        category,
-        image: getProductImage(item.name) ?? "/logo-gordotech.png",
-        available: true,
-    }));
+    return Array.from(productMap.values()).map((item, index) => {
+        const descriptionLines: string[] = [];
+
+        for (const [storage, colors] of item.storageColors.entries()) {
+            if (colors.size > 0) {
+                descriptionLines.push(
+                    `${storage} - ${Array.from(colors).join(", ")}`
+                );
+            } else {
+                descriptionLines.push(storage);
+            }
+        }
+
+        return {
+            id: `${category}-${index + 1}`,
+            name: item.name,
+            description: descriptionLines.join("\n"), // 👈 salto de línea real
+            price: item.price,
+            category,
+            image: getProductImage(item.name) ?? "/logo-gordotech.png",
+            available: true,
+        };
+    });
 }
+
 // ✅ URLs CSV (una por hoja)
 const SHEETS = [
     {

@@ -60,7 +60,7 @@ export function ProductCard({ product }: { product: MenuItem }) {
                     <h3 className="text-lg font-semibold text-primary">
                         {product.name}
                     </h3>
-                    <p className="text-sm text-(--color-muted)">
+                    <p className="text-sm text-(--color-muted) whitespace-pre-line">
                         {product.description}
                     </p>
                 </div>

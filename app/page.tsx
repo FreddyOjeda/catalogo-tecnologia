@@ -51,6 +51,8 @@ export default function Home() {
     }
   }, [category, filteredProducts.length])
 
+  console.log(products)
+
   return (
     <main className="pb-24">
       {/* Banner */}
