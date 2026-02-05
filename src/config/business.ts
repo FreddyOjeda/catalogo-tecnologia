@@ -2,7 +2,7 @@ export const businessConfig = {
     name: "Simón Parrilla",
     slogan: "Hamburguesas y comidas rápidas",
     whatsapp: {
-        phone: "573138179248",
+        phone: "573144810431",
         messageIntro: "Hola, quisiera recibir más información sobre los siguientes productos:",
     },
     theme: {
